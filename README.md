@@ -12,4 +12,4 @@ This is a toy exmaple about how to use [libsnark](https://github.com/scipr-lab/l
 
 ### details
 
-see [here](https://blockchain.iethpay.com/factom_intro.html) for details.
+see [here](https://blockchain.iethpay.com/libsnark-example.html) for details.
