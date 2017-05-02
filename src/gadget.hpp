@@ -65,11 +65,19 @@ public:
         prev_leaf_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "prev_leaf_digest"));
         root_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "root_digest"));
         leaf_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "leaf_digest"));
-
+        /*
+        flag is true : when packing src/target root to field, copy src root (computed root according to leaf/path)
+        to target root, so when generating witness, root_digest must be called after merkle_tree_check_read_gadget.
+        otherwise root_digest will be overwrite by ml, In this case, given a wrong root, it will pass.
+        flag is false : don't do above. so when generating witness, root_digest must be called before merkle_tree_check_read_gadget.
+        otherwise, when calling ml generate_r1cs_witness, it will be packing empty/wrong target root, causing packed_source and
+        packed_target not equal, it will not pass.
+        */
         flag.allocate(this->pb, "flag");
         address_bits_va.allocate(this->pb, tree_depth, "address_bits");
         zero.allocate(this->pb, "zero");
         pb_linear_combination_array<FieldT> IV = SHA256_default_IV(pb);
+        // set pb's primary_input_size
         this->pb.set_input_sizes(2 * sha256_digest_len);
         path_var.reset(new merkle_authentication_path_variable<FieldT, HashT>(this->pb, tree_depth, "path_var"));
         ml.reset(new merkle_tree_check_read_gadget<FieldT, HashT>(this->pb, tree_depth, address_bits_va, *leaf_digest,
