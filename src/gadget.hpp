@@ -71,7 +71,11 @@ public:
         otherwise root_digest will be overwrite by ml, In this case, given a wrong root, it will pass.
         flag is false : don't do above. so when generating witness, root_digest must be called before merkle_tree_check_read_gadget.
         otherwise, when calling ml generate_r1cs_witness, it will be packing empty/wrong target root, causing packed_source and
-        packed_target not equal, it will not pass.
+        packed_target not equal, it will not pass. 因为在调用 ml->generate_r1cs_witness() 函数的时候，会将 target 对应的位数组打包成
+        多个 FieldT 元素，而在调用 ml->generate_r1cs_constraints() 的时候，会将 target 位数组与打包成的多个 FieldT 元素进行等式约束绑定，
+        所以如果不在调用 ml->generate_r1cs_witness() 之前先调用 root_digest->generate_r1cs_witness()，那么在调用 ml->generate_r1cs_witness()
+        的时候，target 其实是全 0 位数组，将其打包成为多个 FieldT::zero() 的元素，而后再次调用 root_digest->generate_r1cs_witness() 后，
+        target 在 pb 中对应的值就会变成 root，那么当再次检查等式约束是否成立时，就会出现 target 位数组与打包好的多个 FieldT 元素不匹配的错误
         */
         flag.allocate(this->pb, "flag");
         address_bits_va.allocate(this->pb, tree_depth, "address_bits");
