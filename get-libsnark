@@ -5,6 +5,9 @@
 # To use curve ALT_BN128 instead of BN128 (which is x64-only), use:
 #  CURVE=ALT_BN128 ./get-libsnark
 
+sudo apt-get install libgmp-dev
+sudo apt-get install libprocps-dev
+
 set -e
 
 LIBSNARK_SRC=${LIBSNARK_SRC:-https://github.com/lightning-li/libsnark-6b7e494c2407eb8e91ad78635788decb2d736596.git}
