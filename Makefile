@@ -1,7 +1,7 @@
 OPTFLAGS = -march=native -mtune=native -O2
 CXXFLAGS += -g -Wall -Wextra -Wno-unused-parameter -std=c++11 -fPIC -Wno-unused-variable
 #CXXFLAGS += -I $(DEPINST)/include -I $(DEPINST)/include/libsnark -DUSE_ASM -DCURVE_ALT_BN128 -DDEBUG
-CXXFLAGS += -I $(DEPINST)/include -I $(DEPINST)/include/libsnark -DUSE_ASM -DCURVE_ALT_BN128
+CXXFLAGS += -I $(DEPINST)/include -I $(DEPINST)/include/libsnark -DUSE_ASM -DCURVE_ALT_BN128 -DMULTICORE -DCURVE_ALT_BN128 -fopenmp -O1 -DBINARY_OUTPUT -fPIC -DPERFORMANCE
 LDFLAGS += -flto
 
 DEPSRC=depsrc
