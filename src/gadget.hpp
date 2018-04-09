@@ -44,7 +44,7 @@ template<typename FieldT, typename HashT>
 class toy_gadget : public gadget<FieldT> {
 public:
     
-    pb_variable_arrray<FieldT> input_as_field_elements;
+    pb_variable_array<FieldT> input_as_field_elements;
     std::shared_ptr<multipacking_gadget<FieldT> > pack_inputs;   // 将 primary input 打包成 field 元素的 gadget
     pb_variable_array<FieldT> input_as_bits;
 
@@ -155,7 +155,7 @@ public:
 
 template<typename FieldT>
 r1cs_primary_input<FieldT> l_input_map(const bit_vector &h1,
-                                             const bit_vector &h2,
+                                             const bit_vector &h2
                                             )
 {
     // Construct the multipacked field points which encode
