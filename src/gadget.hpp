@@ -136,7 +136,8 @@ public:
         this->pb.val(zero) = FieldT::zero();
         prev_leaf_digest->generate_r1cs_witness(prev_leaf);
         h_prev_leaf_gadget->generate_r1cs_witness();
-
+        root_digest->generate_r1cs_witness(root);
+        
         pack_inputs->generate_r1cs_witness_from_bits();
         leaf_digest->generate_r1cs_witness(leaf);
         address_bits_va.fill_with_bits(this->pb, address_bits);
