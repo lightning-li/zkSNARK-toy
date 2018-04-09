@@ -70,15 +70,15 @@ public:
         {
             const size_t input_size_in_field_element = div_ceil(2 * sha256_digest_len, FieldT::capacity());
             input_as_field_elements.allocate(pb, input_size_in_field_element, "input_as_field_elements");
-            this->pb.set_input_size(input_size_in_field_element);
+            this->pb.set_input_sizes(input_size_in_field_element);
         }
 
         prev_leaf_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "prev_leaf_digest"));
         root_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "root_digest"));
         leaf_digest.reset(new digest_variable<FieldT>(this->pb, sha256_digest_len, "leaf_digest"));
 
-        input_as_bits.insert(input_as_bits.end(), prev_leaf_digest.begin(), prev_leaf_digest.end());
-        input_as_bits.insert(input_as_bits.end(), root_digest.begin(), root_digest.end());
+        input_as_bits.insert(input_as_bits.end(), prev_leaf_digest->bits.begin(), prev_leaf_digest->bits.end());
+        input_as_bits.insert(input_as_bits.end(), root_digest->bits.begin(), root_digest->bits.end());
 
         /*
         flag is true : when packing src/target root to field, copy src root (computed root according to leaf/path)
