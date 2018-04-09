@@ -92,6 +92,6 @@ bool verify_proof(r1cs_ppzksnark_verification_key<ppzksnark_ppT> verification_ke
     input.insert(input.end(), prev_leaf.begin(), prev_leaf.end());
     input.insert(input.end(), root.begin(), root.end());
     */
-    const r1cs_primary_input<FieldT> input = l_input_map(prev_leaf, root);
+    const r1cs_primary_input<FieldT> input = l_input_map<FieldT>(prev_leaf, root);
     return r1cs_ppzksnark_verifier_strong_IC<ppzksnark_ppT>(verification_key, input, proof);
 }
