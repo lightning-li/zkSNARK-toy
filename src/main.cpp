@@ -1,6 +1,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "snark.hpp"
+#include <sys/time.h>
 
 using namespace libsnark;
 using namespace std;
@@ -24,16 +25,18 @@ int main(void) {
     generate_merkle_and_branch<sha256_two_to_one_hash_gadget<Fr<default_r1cs_ppzksnark_pp> > > (prev_leaf, leaf, root, address, address_bits, path);
 
     cout << "generating proof...." << endl;
-    clock_t start = clock();
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
     auto proof = generate_proof<default_r1cs_ppzksnark_pp, sha256_two_to_one_hash_gadget<FieldT> >(keypair.pk, prev_leaf, leaf, root, address, address_bits, path);
-    clock_t finish = clock();
+    gettimeofday(&end, NULL);
     cout << "Proof generated!" << endl;
-    cout << "take time : " << (finish - start) / CLOCKS_PER_SEC << " second " << (finish - start) << endl;
+    cout << "take time : " << (end.tv_sec - start.tv_sec) << " second " << (end.tv_usec - start.tv_usec) <<  " microseconds" << endl;
 
     assert(verify_proof<default_r1cs_ppzksnark_pp>(keypair.vk, *proof, prev_leaf, root));
-    clock_t tt = clock();
+    gettimeofday(&start, NULL);
+
     cout << "verify proof finish!" << endl;
-    cout << "take time : " << (tt - finish) / CLOCKS_PER_SEC << " second " << (tt - finish) << endl;
+    cout << "take time : " << (start.tv_sec - end.tv_sec) << " second " << (start.tv_usec - end.tv_usec) << " microseconds" << endl;
 
     return 0;
 }
