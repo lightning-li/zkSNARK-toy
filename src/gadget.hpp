@@ -57,8 +57,8 @@ public:
     pb_variable_array<FieldT> address_bits_va;
     pb_variable<FieldT> flag;
 
-    std::shared_ptr<block_variable<FieldT> > h_prev_leaf_block;  // 512 bit block that constraints prev_leaf + padding
-    std::shared_ptr<sha256_compression_function_gadget<FieldT> > h_prev_leaf_gadget; //hashing gadget for prev_leaf
+    std::shared_ptr<block_variable<FieldT> > h_leaf_block;  // 512 bit block that constraints leaf + padding
+    std::shared_ptr<sha256_compression_function_gadget<FieldT> > h_leaf_gadget; //hashing gadget for leaf
 
     pb_variable<FieldT> zero;
     pb_variable_array<FieldT> padding_var; /* SHA256 length padding */
@@ -67,6 +67,7 @@ public:
     : gadget<FieldT>(pb, "toy_gadget"){
 
         // set pb's primary_input_size
+        
         {
             const size_t input_size_in_field_element = div_ceil(2 * sha256_digest_len, FieldT::capacity());
             input_as_field_elements.allocate(pb, input_size_in_field_element, "input_as_field_elements");
@@ -111,11 +112,11 @@ public:
                 padding_var.emplace_back(zero);
         }
 
-        h_prev_leaf_block.reset(new block_variable<FieldT> (this->pb, {prev_leaf_digest->bits,
-          padding_var}, "h_prev_leaf_block"
+        h_leaf_block.reset(new block_variable<FieldT> (this->pb, {leaf_digest->bits,
+          padding_var}, "h_leaf_block"
         ));
-        h_prev_leaf_gadget.reset(new sha256_compression_function_gadget<FieldT>(this->pb, IV,
-        h_prev_leaf_block->bits, *leaf_digest, "h_prev_leaf_gadget"));
+        h_leaf_gadget.reset(new sha256_compression_function_gadget<FieldT>(this->pb, IV,
+        h_leaf_block->bits, *prev_leaf_digest, "h_leaf_gadget"));
     }
 
     void generate_r1cs_constraints()
@@ -123,7 +124,7 @@ public:
         pack_inputs->generate_r1cs_constraints(true);
 
         //prev_leaf_digest->generate_r1cs_constraints();
-        h_prev_leaf_gadget->generate_r1cs_constraints();
+        h_leaf_gadget->generate_r1cs_constraints();
         generate_r1cs_equals_const_constraint<FieldT>(this->pb, zero, FieldT::zero(), "zero");
         path_var->generate_r1cs_constraints();
         ml->generate_r1cs_constraints();
@@ -135,14 +136,13 @@ public:
         this->pb.val(flag) = FieldT::one();
         this->pb.val(zero) = FieldT::zero();
         prev_leaf_digest->generate_r1cs_witness(prev_leaf);
-        h_prev_leaf_gadget->generate_r1cs_witness();
+        leaf_digest->generate_r1cs_witness(leaf);
+        h_leaf_gadget->generate_r1cs_witness();
         root_digest->generate_r1cs_witness(root);
         
         pack_inputs->generate_r1cs_witness_from_bits();
         leaf_digest->generate_r1cs_witness(leaf);
         address_bits_va.fill_with_bits(this->pb, address_bits);
-        std::cout << "fff" << "\n";
-        std::cout << "hhhhh" << "\n";
         path_var->generate_r1cs_witness(address, path);
         ml->generate_r1cs_witness();
 
