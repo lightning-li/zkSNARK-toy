@@ -2,9 +2,9 @@
 
 This is a toy exmaple about how to use [libsnark](https://github.com/scipr-lab/libsnark). libsnark implements zkSNARK algorithm. This toy example do the following:
 
-- The prover know a merkle tree root `rt`, a leaf `leaf`, a valid merkle branch `path` from `leaf` to `rt`, and `prev_leaf`, the preimage of `leaf`(`leaf = sha256(prev_leaf)`).
+- The prover know a merkle tree root `rt`, a leaf `leaf`, a valid merkle branch `path` from `leaf` to `rt`, and `prev_leaf`, the relation between `prev_leaf` and `leaf` is : `prev_leaf = sha256(leaf)`.
 
-- The verifier is given `rt` and `prev_leaf`, can verify that prover know a valid preimage of `leaf`, and a valid merkle brach `path` from `leaf` to `root` using zkSNARK algorithm.  
+- The verifier is given `rt` and `prev_leaf`, can verify that prover know a valid preimage of `prev_leaf`, and a valid merkle brach `path` from `leaf` to `root` using zkSNARK algorithm.  
 
 ### howto
 
